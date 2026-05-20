@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Book</title>
+    <style>
+        :root {
+            --primary-pink: #ff7597;
+            --dark-pink: #e05275;
+            --light-pink: #ffeef2;
+            --bg-gradient: linear-gradient(135deg, #ffeef2 0%, #ffd1dc 100%);
+            --text-color: #4a4a4a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- Lock Screen Styles --- */
+        #lock-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-gradient);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .lock-container {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(224, 82, 117, 0.2);
+            text-align: center;
+            max-width: 360px;
+            width: 90%;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 117, 151, 0.3);
+        }
+
+        .lock-container h2 {
+            color: var(--dark-pink);
+            margin-bottom: 1.5rem;
+            font-size: 1.6rem;
+        }
+
+        .lock-container input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--primary-pink);
+            border-radius: 25px;
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .lock-container input:focus {
+            box-shadow: 0 0 10px rgba(255, 117, 151, 0.5);
+        }
+
+        .lock-container button {
+            background: var(--primary-pink);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.2s;
+            width: 100%;
+        }
+
+        .lock-container button:hover {
+            background: var(--dark-pink);
+            transform: translateY(-2px);
+        }
+
+        .error-msg {
+            color: #d9534f;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        /* --- Main Content --- */
+        #main-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+            padding: 2rem 1rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-top: 2rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--dark-pink);
+            margin-bottom: 0.5rem;
+            font-family: 'Georgia', serif;
+        }
+
+        /* --- Love Letter / Typing Section --- */
+        .letter-section {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            margin-bottom: 3rem;
+            border-left: 5px solid var(--primary-pink);
+            min-height: 200px;
+        }
+
+        .typewriter-text {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            white-space: pre-line;
+            font-family: 'Georgia', serif;
+        }
+
+        /* --- Gallery Section --- */
+        .gallery-heading {
+            text-align: center;
+            color: var(--dark-pink);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 10px;
+        }
+
+        .gallery-item {
+            background: white;
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.03) rotate(1deg);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 380px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .gallery-caption {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.95rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* --- Floating Hearts Container --- */
+        #heart-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 998;
+            overflow: hidden;
+        }
+
+        .floating-heart {
+            position: absolute;
+            bottom: -20px;
+            color: var(--primary-pink);
+            opacity: 0.7;
+            font-size: 1.5rem;
+            animation: floatUp 6s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-105vh) translateX(50px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* --- Responsive Queries --- */
+        @media (max-width: 600px) {
+            header h1 { font-size: 2rem; }
+            .letter-section { padding: 1.5rem; }
+            .typewriter-text { font-size: 1.05rem; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .gallery-item img { height: 350px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="lock-screen">
+        <div class="lock-container">
+            <h2>Our Love Book 💖</h2>
+            <p style="margin-bottom: 1rem; color: #777; font-size: 0.9rem;">Enter our secret key to unlock</p>
+            <input type="text" id="password-input" placeholder="Password..." onkeypress="handleKeyPress(event)">
+            <button onclick="checkPassword()">Unlock Memories</button>
+            <div class="error-msg" id="error-message">Oops! Wrong key, try again love.</div>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <div id="heart-container"></div>
+
+        <header>
+            <h1>Happy Moments Together</h1>
+            <p style="color: var(--dark-pink)">Every chapter is better with you.</p>
+        </header>
+
+        <section class="letter-section">
+            <div id="love-letter" class="typewriter-text"></div>
+        </section>
+
+        <section>
+            <h2 class="gallery-heading">Captured Memories ✨</h2>
+            <div class="gallery-grid">
+                
+                <div class="gallery-item"><img src="1.jpg" alt="Memory 1"><div class="gallery-caption">ချစ်စရာကောင်းလွန်းတဲ့ မင်းရဲ့အပြုံးလေးတွေက ငါ့ကမ္ဘာကို လင်းထိန်စေတယ်။</div></div>
+                <div class="gallery-item"><img src="2.jpg" alt="Memory 2"><div class="gallery-caption">ငေးကြည့်နေမိတဲ့အချိန်တိုင်း ရင်ထဲမှာ အမြဲတမ်းနွေးထွေးရတယ်။</div></div>
+                <div class="gallery-item"><img src="3.jpg" alt="Memory 3"><div class="gallery-caption">မင်းရဲ့ရှက်ပြုံးလေးတွေက သိပ်ကိုအဖိုးတန်လွန်းပါတယ်။</div></div>
+                <div class="gallery-item"><img src="4.jpg" alt="Memory 4"><div class="gallery-caption">မင်းနဲ့အတူရှိနေရတဲ့ မိနစ်တိုင်းက အမှတ်တရတွေချည်းပါပဲ။</div></div>
+                <div class="gallery-item"><img src="5.jpg" alt="Memory 5"><div class="gallery-caption">ရင်ထဲမှာ မင်းတစ်ယောက်ပဲ အမြဲတမ်းရှိနေမှာပါ။</div></div>
+                <div class="gallery-item"><img src="6.jpg" alt="Memory 6"><div class="gallery-caption">မြတ်မြတ်နိုးနိုးနဲ့ သံယောဇဉ်တွယ်မိစေတဲ့ မျက်နှာလေး။</div></div>
+                <div class="gallery-item"><img src="7.jpg" alt="Memory 7"><div class="gallery-caption">ချစ်ရသူလေးရဲ့ ပုံရိပ်လှလှလေးတွေ။</div></div>
+                <div class="gallery-item"><img src="8.jpg" alt="Memory 8"><div class="gallery-caption">မင်းရဲ့အနားမှာပဲ အမြဲတမ်းရှိနေချင်ပါတယ်။</div></div>
+                <div class="gallery-item"><img src="9.jpg" alt="Memory 9"><div class="gallery-caption">ဒီထက်မက ပိုပြီးတော့လည်း အများကြီး ချစ်သွားပါဦးမယ်။</div></div>
+                <div class="gallery-item"><img src="10.jpg" alt="Memory 10"><div class="gallery-caption">ငါ့ဘဝရဲ့ အလှပဆုံးသော အခန်းကဏ္ဍလေးပေါ့။</div></div>
+
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const CORRECT_PASSWORD = "ချစ်တယ်";
+        
+        const letterText = `My Dearest,
+
+မင်း ငါ့ဘဝထဲကို ရောက်လာတဲ့နေ့ကစပြီး ငါ့ရဲ့နေ့ရက်တိုင်းဟာ ပိုပြီးတော့ အဓိပ္ပာယ်ရှိလာခဲ့ပါတယ်။ ဒီ Memory Book လေးကတော့ မင်းနဲ့ငါ့ကြားက အမှတ်တရလေးတွေ၊ ပျော်ရွှင်စရာတွေကို သိမ်းဆည်းထားတဲ့ နေရာလေးတစ်ခုပေါ့။
+
+ငါ့ဘဝရဲ့ စိတ်အချရဆုံးသောလူသားလေး၊ ငါ့ကိုအမြဲနားလည်ပေးပြီး ချစ်ပေးတဲ့အတွက် တကယ်ပဲ ကျေးဇူးတင်ပါတယ်။ မင်းနဲ့အတူ ဖြတ်သန်းရတဲ့ အချိန်တိုင်းက ငါ့အတွက်တော့ အဖိုးမဖြတ်နိုင်တဲ့ လက်ဆောင်တွေပါပဲ။
+
+ဘယ်အချိန်ပဲဖြစ်ဖြစ်၊ ဘယ်လိုအခြေအနေမျိုးမှာပဲဖြစ်ဖြစ် မင်းကိုအမြဲတမ်း မြတ်မြတ်နိုးနိုးနဲ့ ချစ်နေမှာပါ။ ❤️`;
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') checkPassword();
+        }
+
+        function checkPassword() {
+            const input = document.getElementById('password-input').value.trim();
+            const error = document.getElementById('error-message');
+            const lockScreen = document.getElementById('lock-screen');
+            const mainContent = document.getElementById('main-content');
+
+            if (input === CORRECT_PASSWORD) {
+                lockScreen.style.opacity = '0';
+                lockScreen.style.transform = 'scale(0.95)';
+                
+                setTimeout(() => {
+                    lockScreen.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    setTimeout(() => {
+                        mainContent.style.opacity = '1';
+                        startTypewriter();
+                        setInterval(createHeart, 400);
+                    }, 50);
+                }, 800);
+            } else {
+                error.style.display = 'block';
+                const container = document.querySelector('.lock-container');
+                container.style.transform = 'translateX(10px)';
+                setTimeout(() => container.style.transform = 'translateX(-10px)', 100);
+                setTimeout(() => container.style.transform = 'translateX(0)', 200);
+            }
+        }
+
+        function startTypewriter() {
+            let i = 0;
+            const speed = 60;
+            const textContainer = document.getElementById("love-letter");
+
+            function type() {
+                if (i < letterText.length) {
+                    textContainer.innerHTML += letterText.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        function createHeart() {
+            const container = document.getElementById('heart-container');
+            if(!container) return;
+
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            
+            const heartsArray = ['❤️', '💖', '💝', '💕', '🌸'];
+            heart.innerText = heartsArray[Math.floor(Math.random() * heartsArray.length)];
+            
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            heart.style.fontSize = (Math.random() * 1 + 1) + 'rem';
+            
+            container.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 7000);
+        }
+    </script>
+</body>
+</html>
