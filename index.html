@@ -14,6 +14,7 @@
         }
 
         * {
+            box-shadow: none;
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -230,7 +231,8 @@
     </style>
 </head>
 <body>
-<audio src="music.mp3" autoplay loop controls style="display:none;"></audio>
+
+    <audio id="mySong" src="music.mp3" loop></audio>
 
     <div id="lock-screen">
         <div class="lock-container">
@@ -267,7 +269,7 @@
                 <div class="gallery-item"><img src="7.jpg" alt="Memory 7"><div class="gallery-caption">ချစ်ရသူလေးရဲ့ ပုံရိပ်လှလှလေးတွေ။</div></div>
                 <div class="gallery-item"><img src="8.jpg" alt="Memory 8"><div class="gallery-caption">မင်းရဲ့အနားမှာပဲ အမြဲတမ်းရှိနေချင်ပါတယ်။</div></div>
                 <div class="gallery-item"><img src="9.jpg" alt="Memory 9"><div class="gallery-caption">ဒီထက်မက ပိုပြီးတော့လည်း အများကြီး ချစ်သွားပါဦးမယ်။</div></div>
-                <div class="gallery-item"><img src="10.jpg" alt="Memory 10"><div class="gallery-caption">ငါ့ဘဝရဲ့ အလှပဆုံးသော အခန်းကဏ္ဍလေးပေါ့။</div></div>
+                <div class="gallery-item"><img src="10.jpg" alt="Memory 10"><div class="gallery-caption">ငါ့ဘဝရဲ့ အလှပဆုံးဆုံးသော အခန်းကဏ္ဍလေးပေါ့။</div></div>
 
             </div>
         </section>
@@ -295,6 +297,12 @@
             const mainContent = document.getElementById('main-content');
 
             if (input === CORRECT_PASSWORD) {
+                // Unlock ခလုတ်နှိပ်လိုက်သည်နှင့် သီချင်းကို တစ်ပြိုင်နက်တည်း အော်တိုဖွင့်ပေးမည့်ကုဒ်
+                const audio = document.getElementById('mySong');
+                if(audio) {
+                    audio.play().catch(err => console.log("Autoplay blocked:", err));
+                }
+
                 lockScreen.style.opacity = '0';
                 lockScreen.style.transform = 'scale(0.95)';
                 
@@ -354,4 +362,3 @@
     </script>
 </body>
 </html>
-<audio src="music.mp3" autoplay loop controls style="display:none;"></audio>
